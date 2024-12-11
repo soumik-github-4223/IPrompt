@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 
 // import { useEffect, useState, Suspense } from "react";
 // import { useRouter, useSearchParams } from "next/navigation";
@@ -67,3 +67,14 @@
 // };
 
 // export default UpdatePrompt;
+
+import React from 'react'
+
+const UpdatePrompt = () => {
+  return (
+    <div>UpdatePrompt</div>
+  )
+}
+
+export default UpdatePrompt
+
