@@ -2,7 +2,7 @@ import '@styles/global.css';
 import Nav from '@components/Nav';
 import Provider from '@components/Provider';
 export const metadata={
-   title:"Promptmania",
+   title:"IPrompt",
    description:"Discover and Share AI prompts",
 }
 const RootLayout = ({children}) => {
