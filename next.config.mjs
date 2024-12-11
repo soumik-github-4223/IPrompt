@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint:{
-    ignoreDuringBuilds: true,
-  },
   experimental: {
     serverComponentsExternalPackages: ["mongoose"],
   },
@@ -15,7 +12,10 @@ const nextConfig = {
         topLevelAwait: true,
       }
       return config
-    }
+    },
+    
   }
   
   export default nextConfig;
+
+  

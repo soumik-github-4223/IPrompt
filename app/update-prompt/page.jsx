@@ -1,80 +1,72 @@
 "use client";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Form from "@components/Form";
 
-// import { useEffect, useState, Suspense } from "react";
-// import { useRouter, useSearchParams } from "next/navigation";
+const UpdatePromptContent = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const promptId = searchParams.get("id");
 
-// import Form from "@components/Form";
+  const [post, setPost] = useState({ prompt: "", tag: "" });
+  const [submitting, setIsSubmitting] = useState(false);
 
-// // Wrap the logic using Suspense
-// const UpdatePrompt = () => {
-//   const router = useRouter();
-//   const searchParams = useSearchParams();
-//   const promptId = searchParams.get("id");
+  useEffect(() => {
+    const getPromptDetails = async () => {
+      const response = await fetch(`/api/prompt/${promptId}`);
+      const data = await response.json();
 
-//   const [post, setPost] = useState({ prompt: "", tag: "" });
-//   const [submitting, setIsSubmitting] = useState(false);
+      setPost({
+        prompt: data.prompt,
+        tag: data.tag,
+      });
+    };
 
-//   useEffect(() => {
-//     const getPromptDetails = async () => {
-//       const response = await fetch(`/api/prompt/${promptId}`);
-//       const data = await response.json();
+    if (promptId) getPromptDetails();
+  }, [promptId]);
 
-//       setPost({
-//         prompt: data.prompt,
-//         tag: data.tag,
-//       });
-//     };
+  const updatePrompt = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
 
-//     if (promptId) getPromptDetails();
-//   }, [promptId]);
+    if (!promptId) return alert("Missing PromptId!");
 
-//   const updatePrompt = async (e) => {
-//     e.preventDefault();
-//     setIsSubmitting(true);
+    try {
+      const response = await fetch(`/api/prompt/${promptId}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          prompt: post.prompt,
+          tag: post.tag,
+        }),
+      });
 
-//     if (!promptId) return alert("Missing PromptId!");
+      if (response.ok) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-//     try {
-//       const response = await fetch(`/api/prompt/${promptId}`, {
-//         method: "PATCH",
-//         body: JSON.stringify({
-//           prompt: post.prompt,
-//           tag: post.tag,
-//         }),
-//       });
-
-//       if (response.ok) {
-//         router.push("/");
-//       }
-//     } catch (error) {
-//       console.log(error);
-//     } finally {
-//       setIsSubmitting(false);
-//     }
-//   };
-
-//   return (
-//     <Suspense fallback={<div>Loading...</div>}>
-//       <Form
-//         type="Edit"
-//         post={post}
-//         setPost={setPost}
-//         submitting={submitting}
-//         handleSubmit={updatePrompt}
-//       />
-//     </Suspense>
-//   );
-// };
-
-// export default UpdatePrompt;
-
-import React from 'react'
+  return (
+    <Form
+      type='Edit'
+      post={post}
+      setPost={setPost}
+      submitting={submitting}
+      handleSubmit={updatePrompt}
+    />
+  );
+};
 
 const UpdatePrompt = () => {
   return (
-    <div>UpdatePrompt</div>
-  )
-}
+    <Suspense fallback={<div>Loading...</div>}>
+      <UpdatePromptContent />
+    </Suspense>
+  );
+};
 
-export default UpdatePrompt
-
+export default UpdatePrompt;
